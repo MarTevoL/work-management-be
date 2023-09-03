@@ -65,6 +65,24 @@ Our studios is in need of a simple task management web app that allows our team 
  */
 ```
 
+```javascript
+/**
+ * @route POST /auth/forgotPassword
+ * @description create new password with registed email
+ * @body {email}
+ * @access Public
+ */
+```
+
+```javascript
+/**
+ * @route POST /auth/resetPassword
+ * @description reset password with registed email
+ * @body {email, newPassword}
+ * @access Public
+ */
+```
+
 ## User APIs
 
 ```javascript
