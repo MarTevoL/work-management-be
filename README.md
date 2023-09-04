@@ -178,39 +178,11 @@ Our studios is in need of a simple task management web app that allows our team 
  */
 ```
 
-## Comment APIs
-
 ```javascript
 /**
- * @route POST /comments
- * @description post a comment
- * @body {status}
- * @access login required
- */
-```
-
-```javascript
-/**
- * @route GET /comments/:userId?page=1&limit=10
- * @description get list of comment user can see with pagination
- * @access login required
- */
-```
-
-```javascript
-/**
- * @route PUT /comments/:commentId
- * @description edit a comment of user
- * @body {userId}
- * @access login required
- */
-```
-
-```javascript
-/**
- * @route DELETE /comments/:commentId
- * @description delete a comment of user
- * @body {userId}
+ * @route PUT /tasks/comments/:taskId
+ * @description add comment to task
+ * @body {userId, body}
  * @access login required
  */
 ```
@@ -249,6 +221,16 @@ Our studios is in need of a simple task management web app that allows our team 
  * @route GET /projectMember/:projectId?page=1&limit=10
  * @description get list of members take part in this project
  * @access manager login required
+ */
+```
+
+```javascript
+/**
+/**
+ * @route PUT /projects/comments/:projectId
+ * @description add comment in project
+ * @body {userId, body}
+ * @access login required
  */
 ```
 
