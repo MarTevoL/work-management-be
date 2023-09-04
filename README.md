@@ -135,16 +135,15 @@ Our studios is in need of a simple task management web app that allows our team 
 
 ```javascript
 /**
- * @route GET /tasks/:userId?page=1&limit=10
+ * @route GET /tasks?page=1&limit=10
  * @description get list of tasks user can see with pagination
- * @body {project,assignee,status}
  * @access login required
  */
 ```
 
 ```javascript
 /**
- * @route GET /tasks/assignee/:userId
+ * @route GET /tasks/assignee/:taskId
  * @description get list of tasks of assignee
  * @body {assigneeId}
  * @access login required
@@ -153,28 +152,19 @@ Our studios is in need of a simple task management web app that allows our team 
 
 ```javascript
 /**
- * @route PUT /tasks/assign/:userId
+ * @route PUT /tasks/assign/:taskId
  * @description user assign task to themselves ,only manager can assign to team members
- * @body {assigneeIds}
+ * @body {assigneeId}
  * @access login required
  */
 ```
 
 ```javascript
 /**
- * @route PUT /tasks/update/:userId
+ * @route PUT /tasks/update/:taskId
  * @description add priority, deadline
- * @body {taskId, priority, deadline}
+ * @body {status, priority, deadline}
  * @access Manager login required
- */
-```
-
-```javascript
-/**
- * @route PUT /tasks/status/:userId
- * @description add priority, deadline
- * @body {taskId, status}
- * @access login required
  */
 ```
 
@@ -182,7 +172,7 @@ Our studios is in need of a simple task management web app that allows our team 
 /**
  * @route PUT /tasks/comments/:taskId
  * @description add comment to task
- * @body {userId, body}
+ * @body { body}
  * @access login required
  */
 ```
@@ -191,7 +181,7 @@ Our studios is in need of a simple task management web app that allows our team 
 
 ```javascript
 /**
- * @route GET /notification/:userId?page=1&limit=10
+ * @route GET /notification?page=1&limit=10
  * @description get list of notification user can see with pagination
  * @access login required
  */
@@ -199,9 +189,25 @@ Our studios is in need of a simple task management web app that allows our team 
 
 ```javascript
 /**
- * @route POST /notification/:taskId
+ * @route POST /notification
  * @description post a notification
- * @body {taskId , status, contents}
+ * @body {taskId ,projectId, title, body}
+ * @access login required
+ */
+```
+
+```javascript
+/**
+ * @route PUT /notifications/:notifId
+ * @description read a notification
+ * @access login required
+ */
+```
+
+```javascript
+/**
+ * @route PUT /notifications/readAll
+ * @description read all notifications
  * @access login required
  */
 ```
@@ -221,16 +227,6 @@ Our studios is in need of a simple task management web app that allows our team 
  * @route GET /projectMember/:projectId?page=1&limit=10
  * @description get list of members take part in this project
  * @access manager login required
- */
-```
-
-```javascript
-/**
-/**
- * @route PUT /projects/comments/:projectId
- * @description add comment in project
- * @body {userId, body}
- * @access login required
  */
 ```
 
