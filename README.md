@@ -59,40 +59,13 @@ Our studios is in need of a simple task management web app that allows our team 
 ```javascript
 /**
  * @route POST /auth/login
- * @description Login with username and password
+ * @description Login with email and password
  * @body {email, password}
  * @access Public
  */
 ```
 
-```javascript
-/**
- * @route POST /auth/forgotPassword
- * @description create new password with registed email
- * @body {email}
- * @access Public
- */
-```
-
-```javascript
-/**
- * @route POST /auth/resetPassword
- * @description reset password with registed email
- * @body {email, newPassword}
- * @access Public
- */
-```
-
 ## User APIs
-
-```javascript
-/**
- * @route POST /users/:email
- * @description Register new user with credentials
- * @body {name, email, password, key}
- * @access Public
- */
-```
 
 ```javascript
 /**
@@ -103,11 +76,29 @@ Our studios is in need of a simple task management web app that allows our team 
  */
 ```
 
+```javascript
+/**
+ * @route POST /users/forgotPassword
+ * @description create new password with registed email
+ * @body {email}
+ * @access Public
+ */
+```
+
+```javascript
+/**
+ * @route PUT /users/resetPassword
+ * @description reset password with registed email
+ * @body {email, newPassword}
+ * @access Public
+ */
+```
+
 ## Project APIs
 
 ```javascript
 /**
- * @route Get /projects/:userId?page=1&limit=10
+ * @route Get /projects/?page=1&limit=10
  * @description get list of projects
  * @access Manager login required
  */
