@@ -1,4 +1,5 @@
 const Task = require("../models/Task");
+require("express-async-errors");
 
 const taskController = {};
 

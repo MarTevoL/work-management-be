@@ -1,8 +1,9 @@
 const User = require("../models/User");
 const Invitation = require("../models/Invitation");
 const { sendMail } = require("../services/sgMail");
-const { AppError } = require("../helpers/utils");
+const { AppError, sendResponse } = require("../helpers/utils");
 require("express-async-errors");
+const bcrypt = require("bcryptjs");
 
 const userController = {};
 
@@ -11,7 +12,7 @@ userController.register = async (req, res, next) => {
   let { name, email, password } = req.body;
 
   // Validation
-  let invitation = await Invitation.findOne({ email });
+  let invitation = await Invitation.findOne({ email, activate: false });
   if (!invitation)
     throw new AppError(400, "Invalid email invitation", "Registration Error");
 
@@ -20,6 +21,7 @@ userController.register = async (req, res, next) => {
     throw new AppError(400, "User already exists", "Registration Error");
 
   // Process
+  await Invitation.findOneAndUpdate({ email }, { activate: true });
   const salt = await bcrypt.genSalt(10);
   password = await bcrypt.hash(password, salt);
   user = await User.create({ name, email, password });
@@ -48,11 +50,27 @@ userController.sendInvitation = async (req, res, next) => {
 };
 
 userController.forgotPassword = async (req, res, next) => {
-  res.send("User forgot password");
+  let { email } = req.body;
+
+  let user = await User.findOne({ email });
+  if (!user)
+    throw new AppError(400, "User email is not exists", "Registration Error");
+
+  sendResponse(res, 200, true, { user }, null, "Valid email");
 };
 
 userController.resetPassword = async (req, res, next) => {
-  res.send("User reset password");
+  let { email, newPassword } = req.body;
+
+  let user = await User.findOne({ email });
+  if (!user)
+    throw new AppError(400, "User is not exists", "Registration Error");
+
+  const salt = await bcrypt.genSalt(10);
+  newPassword = await bcrypt.hash(newPassword, salt);
+  user = await User.findOneAndUpdate({ email }, { password: newPassword });
+
+  sendResponse(res, 200, true, { user }, null, "Password change successful");
 };
 
 module.exports = userController;

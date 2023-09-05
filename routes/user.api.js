@@ -28,7 +28,7 @@ router.post(
  * @access need email invitaion
  */
 router.post(
-  "/",
+  "/register",
   validators.validate([
     body("name", "Invalid name").exists().notEmpty(),
     body("email", "Invalid email")
@@ -70,7 +70,7 @@ router.put(
       .exists()
       .isEmail()
       .normalizeEmail({ gmail_remove_dots: false }),
-    body("password", "Invalid password").exists().notEmpty(),
+    body("newPassword", "Invalid password").exists().notEmpty(),
   ]),
   userController.resetPassword
 );

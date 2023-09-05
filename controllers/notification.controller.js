@@ -1,4 +1,5 @@
 const Notification = require("../models/Notification");
+require("express-async-errors");
 
 const notificationController = {};
 

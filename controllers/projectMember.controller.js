@@ -1,4 +1,5 @@
 const ProjectMember = require("../models/ProjectMember");
+require("express-async-errors");
 
 const projectMemberController = {};
 

@@ -1,4 +1,5 @@
 const Project = require("../models/Project");
+require("express-async-errors");
 
 const projectController = {};
 
