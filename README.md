@@ -78,6 +78,15 @@ Our studios is in need of a simple task management web app that allows our team 
 
 ```javascript
 /**
+ * @route POST /users/register
+ * @description register new user
+ * @body {name, email, password}
+ * @access need email invitaion
+ */
+```
+
+```javascript
+/**
  * @route POST /users/forgotPassword
  * @description create new password with registed email
  * @body {email}

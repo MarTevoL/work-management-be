@@ -1,5 +1,8 @@
 const express = require("express");
 const router = express.Router();
+const taskController = require("../controllers/task.controller");
+const validators = require("../middlewares/validators");
+const { body, param } = require("express-validator");
 
 /**
  * @route POST /tasks
@@ -7,40 +10,83 @@ const router = express.Router();
  * @body {title, description, project}
  * @access Manager login required
  */
+router.post(
+  "/",
+  validators.validate([
+    body("title", "Invalid title").exists().notEmpty(),
+    body("description", "Invalid description").exists().notEmpty(),
+    body("project", "Invalid project").exists().notEmpty(),
+  ]),
+  taskController.createTask
+);
 
 /**
- * @route GET /tasks/:userId?page=1&limit=10
+ * @route GET /tasks?page=1&limit=10
  * @description get list of tasks user can see with pagination
- * @body {project,assignee,status}
  * @access login required
  */
+router.get("/", taskController.getTasks);
 
 /**
- * @route GET /tasks/assignee/:userId
+ * @route GET /tasks/assignee/:taskId
  * @description get list of tasks of assignee
  * @body {assigneeId}
  * @access login required
  */
+router.get(
+  "/assignee/:taskId",
+  validators.validate([
+    param("taskId").exists().isString().custom(validators.checkObjectId),
+    body("assigneeId", "Invalid assigneeId").exists().notEmpty(),
+  ]),
+  taskController.getAssigneeTasks
+);
 
 /**
- * @route PUT /tasks/assign/:userId
+ * @route PUT /tasks/assign/:taskId
  * @description user assign task to themselves ,only manager can assign to team members
- * @body {assigneeIds}
+ * @body {assigneeId}
  * @access login required
  */
+router.put(
+  "/assign/:taskId",
+  validators.validate([
+    param("taskId").exists().isString().custom(validators.checkObjectId),
+    body("assigneeId", "Invalid assigneeId").exists().notEmpty(),
+  ]),
+  taskController.updateAssignee
+);
 
 /**
- * @route PUT /tasks/update/:userId
+ * @route PUT /tasks/update/:taskId
  * @description add priority, deadline
- * @body {taskId, priority, deadline}
+ * @body {status, priority, deadline}
  * @access Manager login required
  */
+router.put(
+  "/update/:taskId",
+  validators.validate([
+    param("taskId").exists().isString().custom(validators.checkObjectId),
+    body("priority", "Invalid priority").exists(),
+    body("status", "Invalid status").exists(),
+    body("deadLine", "Invalid deadline").exists().isDate(),
+  ]),
+  taskController.updateTaskDeadline
+);
 
 /**
- * @route PUT /tasks/status/:userId
- * @description add priority, deadline
- * @body {taskId, status}
+ * @route PUT /tasks/comments/:taskId
+ * @description add comment to task
+ * @body { body}
  * @access login required
  */
+router.put(
+  "/comments/:taskId",
+  validators.validate([
+    param("taskId").exists().isString().custom(validators.checkObjectId),
+    body("body", "Invalid body").exists().notEmpty(),
+  ]),
+  taskController.addTaskComment
+);
 
 module.exports = router;

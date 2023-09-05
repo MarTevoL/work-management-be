@@ -13,9 +13,6 @@ router.use("/projects", projectApi);
 const taskApi = require("./task.api");
 router.use("/tasks", taskApi);
 
-const commentApi = require("./comment.api");
-router.use("/comments", commentApi);
-
 const notificationApi = require("./notification.api");
 router.use("/notifications", notificationApi);
 

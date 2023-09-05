@@ -1,12 +1,8 @@
 const express = require("express");
 const router = express.Router();
-
-/**
- * @route POST /users/:email
- * @description Register new user with credentials
- * @body {name, email, password, key}
- * @access Public
- */
+const userController = require("../controllers/user.controller");
+const validators = require("../middlewares/validators");
+const { body, param } = require("express-validator");
 
 /**
  * @route POST /users/invitation
@@ -14,5 +10,69 @@ const router = express.Router();
  * @body { email}
  * @access Manager login required
  */
+router.post(
+  "/invitation",
+  validators.validate([
+    body("email", "Invalid email")
+      .exists()
+      .isEmail()
+      .normalizeEmail({ gmail_remove_dots: false }),
+  ]),
+  userController.sendInvitation
+);
+
+/**
+ * @route POST /users/register
+ * @description register new user
+ * @body {name, email, password}
+ * @access need email invitaion
+ */
+router.post(
+  "/",
+  validators.validate([
+    body("name", "Invalid name").exists().notEmpty(),
+    body("email", "Invalid email")
+      .exists()
+      .isEmail()
+      .normalizeEmail({ gmail_remove_dots: false }),
+    body("password", "Invalid password").exists().notEmpty(),
+  ]),
+  userController.register
+);
+
+/**
+ * @route POST /users/forgotPassword
+ * @description create new password with registed email
+ * @body {email}
+ * @access Public
+ */
+router.post(
+  "/forgotPassword",
+  validators.validate([
+    body("email", "Invalid email")
+      .exists()
+      .isEmail()
+      .normalizeEmail({ gmail_remove_dots: false }),
+  ]),
+  userController.forgotPassword
+);
+
+/**
+ * @route PUT /users/resetPassword
+ * @description reset password with registed email
+ * @body {email, newPassword}
+ * @access Public
+ */
+router.put(
+  "/resetPassword",
+  validators.validate([
+    body("email", "Invalid email")
+      .exists()
+      .isEmail()
+      .normalizeEmail({ gmail_remove_dots: false }),
+    body("password", "Invalid password").exists().notEmpty(),
+  ]),
+  userController.resetPassword
+);
 
 module.exports = router;
