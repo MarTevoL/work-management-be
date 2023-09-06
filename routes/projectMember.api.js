@@ -3,6 +3,7 @@ const projectMemberController = require("../controllers/projectMember.controller
 const router = express.Router();
 const validators = require("../middlewares/validators");
 const { body, param } = require("express-validator");
+const authentication = require("../middlewares/authentication");
 
 /**
  * @route GET /projectMembers/projects/:userId?page=1&limit=10
@@ -11,6 +12,7 @@ const { body, param } = require("express-validator");
  */
 router.get(
   "/projects/:userId",
+  authentication.loginRequired,
   validators.validate([
     param("userId").exists().isString().custom(validators.checkObjectId),
   ]),
@@ -24,6 +26,8 @@ router.get(
  */
 router.get(
   "/members/:projectId",
+  authentication.loginRequired,
+  authentication.managerRequired,
   validators.validate([
     param("projectId").exists().isString().custom(validators.checkObjectId),
   ]),

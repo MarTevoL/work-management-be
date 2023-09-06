@@ -39,14 +39,21 @@ userController.register = async (req, res, next) => {
 };
 
 userController.sendInvitation = async (req, res, next) => {
+  let { email } = req.body;
+
+  let invitation = await Invitation.findOne({ email });
+  if (invitation)
+    throw new AppError(400, "Email is already invited", "Registration Error");
+
+  invitation = await Invitation.create({ email });
   // sendMail({
-  //   to: "leminhtruong.vt@gmail.com",
-  //   from: "i.martevol@gmail.com",
+  //   to: "user email",
+  //   from: "manager email",
   //   subject: "Invitation to create an account",
   //   text: "test invitation",
   // });
 
-  res.send("Manager send invitation to user email");
+  sendResponse(res, 200, true, { invitation }, null, "Invitation sent");
 };
 
 userController.forgotPassword = async (req, res, next) => {

@@ -3,6 +3,7 @@ const router = express.Router();
 const userController = require("../controllers/user.controller");
 const validators = require("../middlewares/validators");
 const { body, param } = require("express-validator");
+const authentication = require("../middlewares/authentication");
 
 /**
  * @route POST /users/invitation
@@ -12,6 +13,8 @@ const { body, param } = require("express-validator");
  */
 router.post(
   "/invitation",
+  authentication.loginRequired,
+  authentication.managerRequired,
   validators.validate([
     body("email", "Invalid email")
       .exists()
@@ -70,7 +73,7 @@ router.put(
       .exists()
       .isEmail()
       .normalizeEmail({ gmail_remove_dots: false }),
-    body("newPassword", "Invalid password").exists().notEmpty(),
+    body("newPassword", "Invalid new password").exists().notEmpty(),
   ]),
   userController.resetPassword
 );

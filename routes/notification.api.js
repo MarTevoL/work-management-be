@@ -3,13 +3,18 @@ const notificationController = require("../controllers/notification.controller")
 const router = express.Router();
 const validators = require("../middlewares/validators");
 const { body, param } = require("express-validator");
+const authentication = require("../middlewares/authentication");
 
 /**
  * @route GET /notifications?page=1&limit=10
  * @description get list of notification user can see with pagination
  * @access login required
  */
-router.get("/", notificationController.getNotification);
+router.get(
+  "/",
+  authentication.loginRequired,
+  notificationController.getNotification
+);
 
 /**
  * @route POST /notifications
@@ -19,6 +24,7 @@ router.get("/", notificationController.getNotification);
  */
 router.post(
   "/",
+  authentication.loginRequired,
   validators.validate([
     body("taskId").exists().isString().custom(validators.checkObjectId),
     body("projectId").exists().isString().custom(validators.checkObjectId),
@@ -35,6 +41,7 @@ router.post(
  */
 router.put(
   "/:notifId",
+  authentication.loginRequired,
   validators.validate([
     param("notifId").exists().isString().custom(validators.checkObjectId),
   ]),
@@ -42,15 +49,13 @@ router.put(
 );
 
 /**
- * @route PUT /notifications/:userId
+ * @route PUT /notifications/readAll
  * @description read all notifications
  * @access login required
  */
 router.put(
   "/readAll/:userId",
-  validators.validate([
-    param("userId").exists().isString().custom(validators.checkObjectId),
-  ]),
+  authentication.loginRequired,
   notificationController.readAllNotifications
 );
 

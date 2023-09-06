@@ -1,6 +1,10 @@
 const mongoose = require("mongoose");
-const commentSchema = require("./Comment");
 const Schema = mongoose.Schema;
+
+const commentSchema = Schema({
+  user: { type: Schema.Types.ObjectId, require: true, ref: "User" },
+  body: { type: String, require: true },
+});
 
 const taskScheme = Schema(
   {
@@ -19,9 +23,9 @@ const taskScheme = Schema(
       require: true,
     },
     assignee: { type: Schema.Types.ObjectId, require: false, ref: "User" },
-    project: { type: Schema.Types.ObjectId, require: true, ref: "Project" },
-    dueDate: { type: Date, require: true },
-    comment: [commentSchema],
+    projectId: { type: Schema.Types.ObjectId, require: true, ref: "Project" },
+    dueDate: { type: String, require: true, default: "" },
+    comments: [commentSchema],
 
     isDeleted: { type: Boolean, default: false, select: false },
   },
