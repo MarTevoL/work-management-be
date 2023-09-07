@@ -22,12 +22,17 @@ taskController.createTask = async (req, res, next) => {
 
 taskController.getTasks = async (req, res, next) => {
   const currentUserId = req.userId;
-  let { userId } = req.param;
+  const role = req.userRole;
+  let userId = req.params.userId;
   let { page, limit, ...filter } = { ...req.query };
 
-  if (currentUserId !== userId)
-    throw new AppError(400, "Invalid user", "Get Task Error");
-
+  if (currentUserId !== userId && role !== "Manager") {
+    throw new AppError(
+      400,
+      "Invalid role, current user id are not allow",
+      "Get Task Error"
+    );
+  }
   page = parseInt(page) || 1;
   limit = parseInt(limit) || 10;
 

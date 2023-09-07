@@ -46,8 +46,8 @@ router.put(
   authentication.managerRequired,
   validators.validate([
     param("projectId").exists().isString().custom(validators.checkObjectId),
-    body("title", "Invalid title").notEmpty(),
-    body("description", "Invalid description").notEmpty(),
+    body("title", "Invalid title").isString().optional(),
+    body("description", "Invalid description").isString().optional(),
   ]),
   projectController.updateProject
 );

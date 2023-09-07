@@ -22,6 +22,7 @@ authentication.loginRequired = (req, res, next) => {
       }
 
       req.userId = payload._id;
+      req.userRole = payload.role;
     });
     next();
   } catch (error) {
@@ -29,13 +30,9 @@ authentication.loginRequired = (req, res, next) => {
   }
 };
 
-//TODO: authentication.managerLoginRequired
 authentication.managerRequired = async (req, res, next) => {
   try {
-    const currentUserId = req.userId;
-    const user = await User.findOne({ _id: currentUserId });
-
-    if (user.role !== "Manager")
+    if (req.userRole !== "Manager")
       throw new AppError(401, "Manager Login required", "Authentication Error");
 
     next();

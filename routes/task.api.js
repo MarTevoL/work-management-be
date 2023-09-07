@@ -18,7 +18,7 @@ router.post(
   validators.validate([
     body("title", "Invalid title").exists().notEmpty(),
     body("description", "Invalid description").exists().notEmpty(),
-    body("projectId", "Invalid project")
+    body("projectId", "Invalid projectId")
       .exists()
       .notEmpty()
       .custom(validators.checkObjectId),
@@ -32,7 +32,7 @@ router.post(
  * @access login required
  */
 router.get(
-  "/userId",
+  "/:userId",
   authentication.loginRequired,
   validators.validate([
     param("userId").exists().isString().custom(validators.checkObjectId),
@@ -41,13 +41,13 @@ router.get(
 );
 
 /**
- * @route PUT /tasks/assign/:taskId
+ * @route PUT /tasks/:taskId/assign
  * @description user assign task to themselves ,only manager can assign to team members
  * @body {assigneeId}
  * @access login required
  */
 router.put(
-  "/assign/:taskId",
+  "/:taskId/assign",
   authentication.loginRequired,
   validators.validate([
     param("taskId").exists().isString().custom(validators.checkObjectId),
@@ -57,18 +57,17 @@ router.put(
 );
 
 /**
- * @route PUT /tasks/update/:taskId
+ * @route PUT /tasks/:taskId
  * @description add priority, dueDate
  * @body {status, priority, dueDate}
  * @access Manager login required
  */
 router.put(
-  "/update/:taskId",
+  "/:taskId",
 
   authentication.loginRequired,
   authentication.managerRequired,
   validators.validate([
-    param("taskId").exists().isString().custom(validators.checkObjectId),
     body("dueDate", "Invalid dueDate").isString().optional(),
     body("status", "Invalid status").isString().optional(),
     body("priority", "Invalid priority").isString().optional(),
@@ -77,13 +76,13 @@ router.put(
 );
 
 /**
- * @route PUT /tasks/comments/:taskId
+ * @route POST /tasks/:taskId
  * @description add comment to task
  * @body { body}
  * @access login required
  */
-router.put(
-  "/comments/:taskId",
+router.post(
+  "/:taskId",
   authentication.loginRequired,
   validators.validate([
     param("taskId").exists().isString().custom(validators.checkObjectId),
