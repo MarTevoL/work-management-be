@@ -68,9 +68,7 @@ projectController.updateProject = async (req, res, next) => {
   if (userRole !== "Manager")
     throw new AppError(400, "Invalid user, only Manager are allowed");
 
-  let project = await Project.findById({ _id: projectId });
-  console.log(projectId);
-
+  let project = await Project.findById(projectId);
   if (!project)
     throw new AppError(400, "Project is not exists", "Update Project Error");
 
@@ -87,8 +85,23 @@ projectController.updateProject = async (req, res, next) => {
   sendResponse(res, 200, true, { project }, null, "Update project successful");
 };
 
-projectController.addProjectComment = async (req, res, next) => {
-  res.send("Add comment in project");
+//Only empty project can be deleted
+projectController.deleteProject = async (req, res, next) => {
+  const userRole = req.userRole;
+  const projectId = req.params.projectId;
+
+  if (userRole !== "Manager")
+    throw new AppError(400, "Invalid user, only Manager are allowed");
+
+  let project = await Project.findById(projectId);
+  if (!project)
+    throw new AppError(400, "Project is not exists", "Update Project Error");
+
+  //TODO: check if there are tasks in project
+
+  //TODO: delete project in mongo
+
+  //TODO: send notification
 };
 
 module.exports = projectController;

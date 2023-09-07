@@ -9,6 +9,7 @@ const notificationSchema = Schema(
       require: true,
       refPath: "targetType",
     },
+    title: { type: String, require: true },
     body: { type: String, require: true },
   },
   {

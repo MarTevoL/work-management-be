@@ -52,4 +52,10 @@ router.put(
   projectController.updateProject
 );
 
+/**
+ * @route DELETE /projects/:projectId
+ * @description delete a project
+ * @access Manager login required
+ */
+
 module.exports = router;

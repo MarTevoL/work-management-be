@@ -27,6 +27,18 @@ router.post(
 );
 
 /**
+ * @route GET /tasks?page=1&limit=10
+ * @description get all tasks
+ * @access Manager login required
+ */
+router.get(
+  "/",
+  authentication.loginRequired,
+  authentication.managerRequired,
+  taskController.getAllTasks
+);
+
+/**
  * @route GET /tasks/userId?page=1&limit=10
  * @description get list of tasks user can see with pagination
  * @access login required
@@ -37,7 +49,7 @@ router.get(
   validators.validate([
     param("userId").exists().isString().custom(validators.checkObjectId),
   ]),
-  taskController.getTasks
+  taskController.getUserTasks
 );
 
 /**
@@ -91,4 +103,16 @@ router.post(
   taskController.addTaskComment
 );
 
+/**
+ * @route DELETE /tasks/:taskId
+ * @description delete task
+ * @access Manager login required
+ */
+
+router.delete(
+  "/:taskId",
+  authentication.loginRequired,
+  authentication.managerRequired,
+  taskController.deleteTask
+);
 module.exports = router;
