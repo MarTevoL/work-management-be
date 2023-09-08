@@ -85,7 +85,7 @@ projectController.updateProject = async (req, res, next) => {
   sendResponse(res, 200, true, { project }, null, "Update project successful");
 };
 
-//Only empty project can be deleted
+//Only project with "Closed" status can be deleted
 projectController.deleteProject = async (req, res, next) => {
   const userRole = req.userRole;
   const projectId = req.params.projectId;
@@ -95,13 +95,18 @@ projectController.deleteProject = async (req, res, next) => {
 
   let project = await Project.findById(projectId);
   if (!project)
-    throw new AppError(400, "Project is not exists", "Update Project Error");
+    throw new AppError(400, "Project is not exists", "Delete Project Error");
 
-  //TODO: check if there are tasks in project
+  if (project.status !== "CLosed")
+    throw new AppError(400, "Project is not closed", "Delete project error");
 
-  //TODO: delete project in mongo
+  project = await Project.findByIdAndUpdate(
+    projectId,
+    { isDeleted: true },
+    { new: true }
+  );
 
-  //TODO: send notification
+  sendResponse(res, 200, true, { project }, null, "Delete project successful");
 };
 
 module.exports = projectController;

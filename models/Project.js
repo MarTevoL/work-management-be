@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const projectSchema = Schema(
   {
-    title: { type: String, require: true },
+    title: { type: String, require: true, unique: true },
     description: { type: String, require: true },
     isDeleted: { type: Boolean, require: false, default: false },
   },

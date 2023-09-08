@@ -17,7 +17,6 @@ taskController.createTask = async (req, res, next) => {
   if (!proj) throw new AppError(400, "Project not exists", "Create Task Error");
 
   task = await Task.create({ title, description, projectId });
-  //TODO: add task to notifSubcriber
 
   sendResponse(res, 200, true, { task }, null, "Create Task successful");
 };
@@ -56,7 +55,14 @@ taskController.getAllTasks = async (req, res, next) => {
     .skip(offset)
     .limit(limit);
 
-  return sendResponse(res, 200, true, { tasks, totalPages, count }, null, "");
+  return sendResponse(
+    res,
+    200,
+    true,
+    { tasks, totalPages, count },
+    null,
+    "Get all tasks successful"
+  );
 };
 
 taskController.getUserTasks = async (req, res, next) => {
@@ -172,7 +178,6 @@ taskController.deleteTask = async (req, res, next) => {
 
   let task = await Task.findById(taskId);
   if (!task) throw new AppError(400, "Task is not exists", "Update Task Error");
-  //TODO: delete task
 
   const result = await Task.findByIdAndUpdate(
     taskId,

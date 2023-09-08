@@ -8,6 +8,41 @@ require("express-async-errors");
 const notificationController = {};
 
 notificationController.getNotification = async (req, res, next) => {
+  const currentUserId = req.userId;
+
+  let { page, limit, ...filter } = { ...req.query };
+
+  page = parseInt(page) || 1;
+  limit = parseInt(limit) || 10;
+
+  const filterConditions = [{ read: false }, { userId: currentUserId }];
+  if (filter.name) {
+    filterConditions.push({
+      name: { $regex: filter.name, $options: "i" },
+    });
+  }
+
+  const filterCriteria = filterConditions.length
+    ? { $and: filterConditions }
+    : {};
+
+  const count = await NotifSubscriber.countDocuments(filterCriteria);
+  const totalPages = Math.ceil(count / limit);
+  const offset = limit * (page - 1);
+
+  let notifs = await NotifSubscriber.find(filterCriteria)
+    .sort({ createdAt: -1 })
+    .skip(offset)
+    .limit(limit);
+
+  return sendResponse(
+    res,
+    200,
+    true,
+    { notifs, totalPages, count },
+    null,
+    "Get all notifications successfull"
+  );
   res.send("Get Notifications");
 };
 
@@ -26,14 +61,12 @@ notificationController.createNotification = async (req, res, next) => {
       throw new AppError(400, "Invalid project", "Send notification error");
   }
 
-  const notif = await Notification.create({
+  notif = await Notification.create({
     targetType,
     targetId,
     title,
     body,
   });
-
-  await NotifSubscriber.create({ notificationId: notif._id });
 
   sendResponse(res, 200, true, { notif }, null, "Send notification successful");
 };
@@ -78,22 +111,10 @@ notificationController.subscribeNotification = async (req, res, next) => {
       "Notification subcriber error"
     );
 
-  let notifSubcriber = await NotifSubscriber.findOne({
+  const notifSubcriber = await NotifSubscriber.create({
     notificationId: notification._id,
+    userId: currentUserId,
   });
-  console.log(notifSubcriber);
-  if (!notifSubcriber)
-    throw new AppError(
-      400,
-      "NotifSubcriber not found",
-      "Notification subcriber error"
-    );
-
-  notifSubcriber = await NotifSubscriber.findByIdAndUpdate(
-    notifSubcriber._id,
-    { $set: { userId: currentUserId } },
-    { new: true }
-  );
 
   sendResponse(
     res,

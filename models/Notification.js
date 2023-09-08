@@ -7,6 +7,7 @@ const notificationSchema = Schema(
     targetId: {
       type: Schema.Types.ObjectId,
       require: true,
+      unique: true,
       refPath: "targetType",
     },
     title: { type: String, require: true },
