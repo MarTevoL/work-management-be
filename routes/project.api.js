@@ -57,5 +57,13 @@ router.put(
  * @description delete a project
  * @access Manager login required
  */
-
+router.delete(
+  "/:projectId",
+  authentication.loginRequired,
+  authentication.managerRequired,
+  validators.validate([
+    param("projectId").exists().isString().custom(validators.checkObjectId),
+  ]),
+  projectController.deleteProject
+);
 module.exports = router;

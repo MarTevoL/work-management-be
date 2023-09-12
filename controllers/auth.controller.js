@@ -8,7 +8,7 @@ authController.loginWithEmail = async (req, res, next) => {
   const { email, password } = req.body;
 
   const user = await User.findOne({ email }, "+password");
-  if (!user) throw new AppError(400, "Invalid Credentials", "Login Error");
+  if (!user) throw new AppError(400, "Invalid email", "Login Error");
 
   const isMath = await bcrypt.compare(password, user.password);
   if (!isMath) throw new AppError(400, "Wrong password", "Login Error");

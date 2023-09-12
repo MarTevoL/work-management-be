@@ -7,18 +7,36 @@ const bcrypt = require("bcryptjs");
 
 const userController = {};
 
+userController.getCurrentUser = async (req, res, next) => {
+  const currentUserId = req.userId;
+
+  const user = await User.findById(currentUserId);
+
+  if (!user) throw new AppError(400, "User not found", "Get User Error");
+
+  sendResponse(res, 200, true, user, null, "Get current user successful");
+};
+
+userController.getAllUser = async (req, res, next) => {
+  const users = await User.find();
+
+  if (!users) throw new AppError(400, "Users not found", "Get Users Error");
+
+  sendResponse(res, 200, true, { users }, null, "Get all users successful");
+};
+
 userController.register = async (req, res, next) => {
   // Get data from request
   let { name, email, password } = req.body;
 
   // Validation
-  let invitation = await Invitation.findOne({ email, activate: false });
-  if (!invitation)
-    throw new AppError(400, "Invalid email invitation", "Registration Error");
-
   let user = await User.findOne({ email });
   if (user)
-    throw new AppError(400, "User already exists", "Registration Error");
+    throw new AppError(400, "Email already exists", "Registration Error");
+
+  let invitation = await Invitation.findOne({ email, activate: false });
+  if (!invitation)
+    throw new AppError(401, "Invalid email invitation,", "Registration Error");
 
   // Process
   await Invitation.findOneAndUpdate({ email }, { activate: true });

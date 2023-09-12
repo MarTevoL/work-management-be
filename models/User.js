@@ -8,7 +8,12 @@ const userSchema = Schema(
     name: { type: String, require: true },
     email: { type: String, require: true, unique: true },
     password: { type: String, require: true, select: false },
-    role: { type: String, enum: ["Manager", "Staff"], require: true },
+    role: {
+      type: String,
+      enum: ["Manager", "Staff"],
+      require: true,
+      default: "Staff",
+    },
 
     isDeleted: { type: Boolean, default: false, select: false },
     taskCount: { type: Number, default: 0 },

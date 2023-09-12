@@ -20,7 +20,7 @@ router.get(
 );
 
 /**
- * @route GET /projectMembers/:projectId?page=1&limit=10
+ * @route GET /projectMembers/members/:projectId?page=1&limit=10
  * @description get list of members take part in this project
  * @access manager login required
  */

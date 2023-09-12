@@ -6,6 +6,26 @@ const { body, param } = require("express-validator");
 const authentication = require("../middlewares/authentication");
 
 /**
+ * @route GET /users/me
+ * @description Get current user info
+ * @access Public
+ */
+router.get("/me", authentication.loginRequired, userController.getCurrentUser);
+
+/**
+ * @route GET /users/me
+ * @description Get current user info
+ * @access Public
+ */
+router.get(
+  "/",
+  authentication.loginRequired,
+
+  authentication.managerRequired,
+  userController.getAllUser
+);
+
+/**
  * @route POST /users/invitation
  * @description Send invitation to set up account
  * @body { email}
@@ -28,7 +48,7 @@ router.post(
  * @route POST /users/register
  * @description register new user
  * @body {name, email, password}
- * @access need email invitaion
+ * @access need email invitation
  */
 router.post(
   "/register",
@@ -45,7 +65,7 @@ router.post(
 
 /**
  * @route POST /users/forgotPassword
- * @description create new password with registed email
+ * @description create new password with register email
  * @body {email}
  * @access Public
  */
@@ -62,7 +82,7 @@ router.post(
 
 /**
  * @route PUT /users/resetPassword
- * @description reset password with registed email
+ * @description reset password with register email
  * @body {email, newPassword}
  * @access Public
  */

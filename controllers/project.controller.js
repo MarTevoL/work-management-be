@@ -96,9 +96,9 @@ projectController.deleteProject = async (req, res, next) => {
   let project = await Project.findById(projectId);
   if (!project)
     throw new AppError(400, "Project is not exists", "Delete Project Error");
-
-  if (project.status !== "CLosed")
-    throw new AppError(400, "Project is not closed", "Delete project error");
+  //FIXME:
+  // if (project.status !== "CLosed")
+  //   throw new AppError(400, "Project is not closed", "Delete project error");
 
   project = await Project.findByIdAndUpdate(
     projectId,

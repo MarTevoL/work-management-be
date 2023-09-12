@@ -104,6 +104,44 @@ taskController.getUserTasks = async (req, res, next) => {
   return sendResponse(res, 200, true, { tasks, totalPages, count }, null, "");
 };
 
+taskController.getProjectTasks = async (req, res, next) => {
+  const role = req.userRole;
+  let projectId = req.params.projectId;
+  let { page, limit, ...filter } = { ...req.query };
+
+  if (role !== "Manager") {
+    throw new AppError(
+      400,
+      "Invalid role, current user id are not allow",
+      "Get Task Error"
+    );
+  }
+  page = parseInt(page) || 1;
+  limit = parseInt(limit) || 10;
+
+  const filterConditions = [{ isDeleted: false }, { projectId: projectId }];
+  if (filter.name) {
+    filterConditions.push({
+      name: { $regex: filter.name, $options: "i" },
+    });
+  }
+
+  const filterCriteria = filterConditions.length
+    ? { $and: filterConditions }
+    : {};
+
+  const count = await Task.countDocuments(filterCriteria);
+  const totalPages = Math.ceil(count / limit);
+  const offset = limit * (page - 1);
+
+  let tasks = await Task.find(filterCriteria)
+    .sort({ createdAt: -1 })
+    .skip(offset)
+    .limit(limit);
+
+  return sendResponse(res, 200, true, { tasks, totalPages, count }, null, "");
+};
+
 taskController.updateAssignee = async (req, res, next) => {
   const currentUserId = req.userId;
   let { assigneeId } = req.body;

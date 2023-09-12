@@ -39,7 +39,7 @@ router.get(
 );
 
 /**
- * @route GET /tasks/userId?page=1&limit=10
+ * @route GET /tasks/:userId?page=1&limit=10
  * @description get list of tasks user can see with pagination
  * @access login required
  */
@@ -50,6 +50,21 @@ router.get(
     param("userId").exists().isString().custom(validators.checkObjectId),
   ]),
   taskController.getUserTasks
+);
+
+/**
+ * @route GET /tasks/project/:projectId?page=1&limit=10
+ * @description get list of tasks of project
+ * @access manager required
+ */
+router.get(
+  "/project/:projectId",
+  authentication.loginRequired,
+  authentication.managerRequired,
+  validators.validate([
+    param("projectId").exists().isString().custom(validators.checkObjectId),
+  ]),
+  taskController.getProjectTasks
 );
 
 /**
