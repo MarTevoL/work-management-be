@@ -3,15 +3,15 @@ const Schema = mongoose.Schema;
 
 const notificationSchema = Schema(
   {
-    targetType: { type: String, enum: ["Task", "Project"], require: true },
-    targetId: {
+    userId: { type: Schema.Types.ObjectId, require: false, ref: "User" },
+    taskId: {
       type: Schema.Types.ObjectId,
       require: true,
-      unique: true,
-      refPath: "targetType",
+      ref: "Task",
     },
     title: { type: String, require: true },
-    body: { type: String, require: true },
+    body: { type: String, require: false },
+    read: { type: Boolean, require: false, default: false },
   },
   {
     timestamps: true,

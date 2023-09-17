@@ -13,9 +13,9 @@ const authentication = require("../middlewares/authentication");
 router.get("/me", authentication.loginRequired, userController.getCurrentUser);
 
 /**
- * @route GET /users/me
- * @description Get current user info
- * @access Public
+ * @route GET /users
+ * @description Get all user
+ * @access manager login
  */
 router.get(
   "/",
@@ -23,6 +23,19 @@ router.get(
 
   authentication.managerRequired,
   userController.getAllUser
+);
+
+/**
+ * @route GET /users/staff
+ * @description Get all user which role is staff
+ * @access manager login
+ */
+router.get(
+  "/staff",
+  authentication.loginRequired,
+
+  authentication.managerRequired,
+  userController.getAllStaff
 );
 
 /**

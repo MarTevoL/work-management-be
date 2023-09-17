@@ -1,4 +1,5 @@
 const { AppError, sendResponse } = require("../helpers/utils");
+const Notification = require("../models/Notification");
 const Project = require("../models/Project");
 const ProjectMember = require("../models/ProjectMember");
 const Task = require("../models/Task");
@@ -17,6 +18,8 @@ taskController.createTask = async (req, res, next) => {
   if (!proj) throw new AppError(400, "Project not exists", "Create Task Error");
 
   task = await Task.create({ title, description, projectId });
+
+  await Notification.create({ taskId: task._id, title: title });
 
   sendResponse(res, 200, true, { task }, null, "Create Task successful");
 };
@@ -160,11 +163,11 @@ taskController.updateAssignee = async (req, res, next) => {
     { new: true }
   );
 
-  //Update projectID and userId to projectMember
-  await ProjectMember.create({
-    userId: assigneeId,
-    projectId: task.projectId,
-  });
+  //update assignee to Notification
+  await Notification.findOneAndUpdate(
+    { taskId: taskId },
+    { userId: assigneeId }
+  );
 
   sendResponse(res, 200, true, { task }, null, "Task assign successful");
 };
@@ -184,6 +187,12 @@ taskController.updateTaskStatus = async (req, res, next) => {
   });
 
   await task.save();
+  await Notification.create({
+    userId: task.assignee,
+    taskId: taskId,
+    title: task.title,
+    body: `Your task has update`,
+  });
 
   sendResponse(res, 200, true, { task }, null, "Update task successful");
 };
@@ -204,6 +213,13 @@ taskController.addTaskComment = async (req, res, next) => {
     console.log(post);
   });
 
+  await Notification.create({
+    userId: task.assignee,
+    taskId: taskId,
+    title: task.title,
+    body: `Your task has comment`,
+  });
+
   sendResponse(res, 200, true, { task }, null, "Comment on task successful");
 };
 
@@ -222,6 +238,13 @@ taskController.deleteTask = async (req, res, next) => {
     { isDeleted: true },
     { new: true }
   );
+
+  await Notification.create({
+    userId: task.assignee,
+    taskId: taskId,
+    title: task.title,
+    body: `Your task has been deleted`,
+  });
 
   sendResponse(res, 200, true, { result }, null, "Delete task successful");
 };

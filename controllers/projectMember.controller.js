@@ -88,7 +88,14 @@ projectMemberController.getMemberList = async (req, res, next) => {
     .skip(offset)
     .limit(limit);
 
-  return sendResponse(res, 200, true, { members, totalPages, count }, null, "");
+  return sendResponse(
+    res,
+    200,
+    true,
+    { members, totalPages, count },
+    null,
+    "Get project members successful"
+  );
 };
 
 module.exports = projectMemberController;
