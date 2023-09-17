@@ -145,40 +145,13 @@ taskController.getProjectTasks = async (req, res, next) => {
   return sendResponse(res, 200, true, { tasks, totalPages, count }, null, "");
 };
 
-taskController.updateAssignee = async (req, res, next) => {
-  const currentUserId = req.userId;
-  let { assigneeId } = req.body;
-  const taskId = req.params.taskId;
-  const userRole = req.userRole;
-
-  if (currentUserId !== assigneeId && userRole !== "Manager")
-    throw new AppError(400, "Invalid User", "Assign Task Error");
-
-  let task = await Task.findById(taskId);
-  if (!task) throw new AppError(400, "Task not found", "Update Assignee Error");
-
-  task = await Task.findByIdAndUpdate(
-    taskId,
-    { assignee: assigneeId },
-    { new: true }
-  );
-
-  //update assignee to Notification
-  await Notification.findOneAndUpdate(
-    { taskId: taskId },
-    { userId: assigneeId }
-  );
-
-  sendResponse(res, 200, true, { task }, null, "Task assign successful");
-};
-
 taskController.updateTaskStatus = async (req, res, next) => {
   const taskId = req.params.taskId;
 
   let task = await Task.findById(taskId);
   if (!task) throw new AppError(400, "Task not found", "Update task error");
 
-  const allows = ["priority", "status", "dueDate"];
+  const allows = ["priority", "assignee", "dueDate"];
 
   allows.forEach((field) => {
     if (req.body[field] !== undefined) {
@@ -187,6 +160,14 @@ taskController.updateTaskStatus = async (req, res, next) => {
   });
 
   await task.save();
+
+  //if assignee in body, Update projectID and userId to projectMember
+  if (req.body["assignee"] !== undefined)
+    await ProjectMember.create({
+      userId: req.body["assignee"],
+      projectId: task.projectId,
+    });
+
   await Notification.create({
     userId: task.assignee,
     taskId: taskId,

@@ -45,31 +45,6 @@ notificationController.getNotification = async (req, res, next) => {
   res.send("Get Notifications");
 };
 
-notificationController.createNotification = async (req, res, next) => {
-  let { targetType, targetId, title, body } = req.body;
-
-  if (targetType === "Task") {
-    const task = await Task.findById(targetId);
-    if (!task)
-      throw new AppError(400, "Invalid task", "Send notification error");
-  }
-
-  if (targetType === "Project") {
-    const project = await Project.findById(targetId);
-    if (!project)
-      throw new AppError(400, "Invalid project", "Send notification error");
-  }
-
-  notif = await Notification.create({
-    targetType,
-    targetId,
-    title,
-    body,
-  });
-
-  sendResponse(res, 200, true, { notif }, null, "Send notification successful");
-};
-
 notificationController.readNotification = async (req, res, next) => {
   const notifId = req.params.notifId;
 

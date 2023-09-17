@@ -68,22 +68,6 @@ router.get(
 );
 
 /**
- * @route PUT /tasks/:taskId/assign
- * @description user assign task to themselves ,only manager can assign to team members
- * @body {assigneeId}
- * @access login required
- */
-router.put(
-  "/:taskId/assign",
-  authentication.loginRequired,
-  validators.validate([
-    param("taskId").exists().isString().custom(validators.checkObjectId),
-    body("assigneeId", "Invalid assigneeId").exists().notEmpty(),
-  ]),
-  taskController.updateAssignee
-);
-
-/**
  * @route PUT /tasks/:taskId
  * @description add priority, dueDate
  * @body {status, priority, dueDate}
