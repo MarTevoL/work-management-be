@@ -4,6 +4,7 @@ const { sendMail } = require("../services/sgMail");
 const { AppError, sendResponse } = require("../helpers/utils");
 require("express-async-errors");
 const bcrypt = require("bcryptjs");
+const Notification = require("../models/Notification");
 
 const userController = {};
 
@@ -107,6 +108,12 @@ userController.resetPassword = async (req, res, next) => {
   newPassword = await bcrypt.hash(passwordConfirm, salt);
   user = await User.findByIdAndUpdate(currentUserId, {
     password: newPassword,
+  });
+
+  await Notification.create({
+    userId: currentUserId,
+    title: "Password has changed",
+    body: `You has update new password`,
   });
 
   sendResponse(res, 200, true, { user }, null, "Password change successful");

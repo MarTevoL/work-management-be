@@ -103,7 +103,7 @@ router.put(
   "/resetPassword",
   authentication.loginRequired,
   validators.validate([
-    body("oldPass", "Invalid new password").exists().notEmpty(),
+    body("oldPass", "Invalid old password").exists().notEmpty(),
     body("password", "Invalid new password").exists().notEmpty(),
     body("passwordConfirm", "Invalid new password confirmation")
       .exists()

@@ -6,7 +6,7 @@ const notificationSchema = Schema(
     userId: { type: Schema.Types.ObjectId, require: false, ref: "User" },
     taskId: {
       type: Schema.Types.ObjectId,
-      require: true,
+      require: false,
       ref: "Task",
     },
     title: { type: String, require: true },
