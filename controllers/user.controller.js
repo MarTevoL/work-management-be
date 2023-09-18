@@ -93,15 +93,21 @@ userController.forgotPassword = async (req, res, next) => {
 };
 
 userController.resetPassword = async (req, res, next) => {
-  let { email, newPassword } = req.body;
+  const { oldPass, passwordConfirm } = req.body;
+  const currentUserId = req.userId;
 
-  let user = await User.findOne({ email });
-  if (!user)
-    throw new AppError(400, "User is not exists", "Registration Error");
+  let user = await User.findOne({ _id: currentUserId }, "+password");
+  if (!user) throw new AppError(400, "Invalid user", "Reset password Error");
+
+  const isMath = await bcrypt.compare(oldPass, user.password);
+  if (!isMath)
+    throw new AppError(400, "Wrong old password", "Reset password Error");
 
   const salt = await bcrypt.genSalt(10);
-  newPassword = await bcrypt.hash(newPassword, salt);
-  user = await User.findOneAndUpdate({ email }, { password: newPassword });
+  newPassword = await bcrypt.hash(passwordConfirm, salt);
+  user = await User.findByIdAndUpdate(currentUserId, {
+    password: newPassword,
+  });
 
   sendResponse(res, 200, true, { user }, null, "Password change successful");
 };

@@ -96,17 +96,18 @@ router.post(
 /**
  * @route PUT /users/resetPassword
  * @description reset password with register email
- * @body {email, newPassword}
+ * @body { password, oldPass}
  * @access Public
  */
 router.put(
   "/resetPassword",
+  authentication.loginRequired,
   validators.validate([
-    body("email", "Invalid email")
+    body("oldPass", "Invalid new password").exists().notEmpty(),
+    body("password", "Invalid new password").exists().notEmpty(),
+    body("passwordConfirm", "Invalid new password confirmation")
       .exists()
-      .isEmail()
-      .normalizeEmail({ gmail_remove_dots: false }),
-    body("newPassword", "Invalid new password").exists().notEmpty(),
+      .notEmpty(),
   ]),
   userController.resetPassword
 );
