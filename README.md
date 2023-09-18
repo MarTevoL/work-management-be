@@ -20,8 +20,7 @@ Our studios is in need of a simple task management web app that allows our team 
 2. As a team member, I want to be able to log in/out of my account
 3. As a team member, I want to be able to view my assigned tasks, deadlines, and priorities in one place.
 4. As a team member, I want to be able to receive notification and reminders related to my tasks
-5. As a team member, I want to be able to update the status of my tasks, mark them as complete, and provide comments or notes as necessary.
-6. As a team member, I want to be able to collaborate with my team members by sharing files or resources related to the tasks.
+5. As a team member, I want to be able to update the status of my tasks, mark them as complete
 
 # Features and Specifications
 
@@ -45,12 +44,11 @@ Our studios is in need of a simple task management web app that allows our team 
 ## Team Collaboration
 
 - [x] Team member can view other members’ tasks
-- [x] Team member and manager can leave comments on other members tasks
 
 ## Reminder & Notification
 
-- [x] Manager can receive email and/or in app notification about task status update by team member
-- [x] Team member can receive receive email and/or in app notification about changes made by their manager to their tasks
+- [x] Manager can receive in app notification about task status update by team member
+- [x] Team member can receive receive in app notification about changes made by their manager to their tasks
 
 # Endpoint APIs
 
@@ -82,15 +80,6 @@ Our studios is in need of a simple task management web app that allows our team 
  * @description register new user
  * @body {name, email, password}
  * @access need email invitaion
- */
-```
-
-```javascript
-/**
- * @route POST /users/forgotPassword
- * @description create new password with registed email
- * @body {email}
- * @access Public
  */
 ```
 
@@ -153,16 +142,7 @@ Our studios is in need of a simple task management web app that allows our team 
 ```javascript
 /**
  * @route GET /tasks/assignee/:taskId
- * @description get list of tasks of assignee
- * @body {assigneeId}
- * @access login required
- */
-```
-
-```javascript
-/**
- * @route PUT /tasks/assign/:taskId
- * @description user assign task to themselves ,only manager can assign to team members
+ * @description get list of tasks of users
  * @body {assigneeId}
  * @access login required
  */
@@ -172,17 +152,8 @@ Our studios is in need of a simple task management web app that allows our team 
 /**
  * @route PUT /tasks/update/:taskId
  * @description add priority, deadline
- * @body {status, priority, deadline}
+ * @body {assignee, priority, deadline}
  * @access Manager login required
- */
-```
-
-```javascript
-/**
- * @route PUT /tasks/comments/:taskId
- * @description add comment to task
- * @body { body}
- * @access login required
  */
 ```
 
@@ -192,15 +163,6 @@ Our studios is in need of a simple task management web app that allows our team 
 /**
  * @route GET /notification?page=1&limit=10
  * @description get list of notification user can see with pagination
- * @access login required
- */
-```
-
-```javascript
-/**
- * @route POST /notification
- * @description post a notification
- * @body {taskId ,projectId, title, body}
  * @access login required
  */
 ```

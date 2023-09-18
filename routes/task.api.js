@@ -87,22 +87,6 @@ router.put(
 );
 
 /**
- * @route POST /tasks/:taskId
- * @description add comment to task
- * @body { body}
- * @access login required
- */
-router.post(
-  "/:taskId",
-  authentication.loginRequired,
-  validators.validate([
-    param("taskId").exists().isString().custom(validators.checkObjectId),
-    body("body", "Invalid body").exists().notEmpty(),
-  ]),
-  taskController.addTaskComment
-);
-
-/**
  * @route DELETE /tasks/:taskId
  * @description delete task
  * @access Manager login required

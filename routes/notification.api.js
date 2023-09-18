@@ -17,6 +17,17 @@ router.get(
 );
 
 /**
+ * @route PUT /notifications/all
+ * @description read all notifications
+ * @access login required
+ */
+router.put(
+  "/readAll",
+  authentication.loginRequired,
+  notificationController.readAllNotifications
+);
+
+/**
  * @route PUT /notifications/:notifId
  * @description read a notification
  * @access login required
@@ -28,17 +39,6 @@ router.put(
     param("notifId").exists().isString().custom(validators.checkObjectId),
   ]),
   notificationController.readNotification
-);
-
-/**
- * @route PUT /notifications/:userId/all
- * @description read all notifications
- * @access login required
- */
-router.put(
-  "/:userId/all",
-  authentication.loginRequired,
-  notificationController.readAllNotifications
 );
 
 module.exports = router;

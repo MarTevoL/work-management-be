@@ -63,12 +63,11 @@ notificationController.readNotification = async (req, res, next) => {
 
 notificationController.readAllNotifications = async (req, res, next) => {
   const currentUserId = req.userId;
-  const userId = req.params.userId;
 
-  if (currentUserId !== userId)
-    throw new AppError(401, "Invalid user", "Read all notification error");
-
-  await Notification.updateMany({ read: false }, { $set: { read: true } });
+  await Notification.updateMany(
+    { userId: currentUserId, read: false },
+    { $set: { read: true } }
+  );
 
   sendResponse(res, 200, true, null, null, "Read all notification successful");
 };

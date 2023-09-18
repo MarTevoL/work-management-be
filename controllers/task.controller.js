@@ -178,32 +178,6 @@ taskController.updateTaskStatus = async (req, res, next) => {
   sendResponse(res, 200, true, { task }, null, "Update task successful");
 };
 
-taskController.addTaskComment = async (req, res, next) => {
-  const currentUserId = req.userId;
-  const taskId = req.params.taskId;
-  let { body } = req.body;
-
-  let task = await Task.findById(taskId);
-  if (!task) throw new AppError(400, "Task not found", "Task comment error");
-
-  task = Task.findByIdAndUpdate(
-    taskId,
-    { $push: { comments: { user: currentUserId, body: body } } },
-    { new: true }
-  ).then(function (post) {
-    console.log(post);
-  });
-
-  await Notification.create({
-    userId: task.assignee,
-    taskId: taskId,
-    title: task.title,
-    body: `Your task has comment`,
-  });
-
-  sendResponse(res, 200, true, { task }, null, "Comment on task successful");
-};
-
 taskController.deleteTask = async (req, res, next) => {
   const userRole = req.userRole;
   const taskId = req.params.taskId;
@@ -218,6 +192,12 @@ taskController.deleteTask = async (req, res, next) => {
     taskId,
     { isDeleted: true },
     { new: true }
+  );
+
+  //remove projectMember of task
+  await ProjectMember.findOneAndUpdate(
+    { projectId: task.projectId, userId: task.assignee },
+    { isDeleted: true }
   );
 
   await Notification.create({
