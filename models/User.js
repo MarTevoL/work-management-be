@@ -19,6 +19,7 @@ const userSchema = Schema(
     taskCount: { type: Number, default: 0 },
     projectCount: { type: Number, default: 0 },
     notificationCount: { type: Number, default: 0 },
+    isDarkMode: { type: Boolean, default: false },
   },
   {
     timestamps: true,

@@ -83,6 +83,19 @@ userController.sendInvitation = async (req, res, next) => {
   sendResponse(res, 200, true, { invitation }, null, "Invitation sent");
 };
 
+userController.updateDarkMode = async (req, res, next) => {
+  let { isDarkMode } = req.body;
+  const currentUserId = req.userId;
+
+  const user = await User.findByIdAndUpdate(
+    currentUserId,
+    { isDarkMode: isDarkMode },
+    { new: true }
+  );
+
+  sendResponse(res, 200, true, { user }, null, "Update dark mode successful");
+};
+
 userController.forgotPassword = async (req, res, next) => {
   let { email } = req.body;
 

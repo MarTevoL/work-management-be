@@ -112,4 +112,19 @@ router.put(
   userController.resetPassword
 );
 
+/**
+ * @route PUT /users/changeDarkMode
+ * @description update dark mode theme
+ * @body { isDarkMode}
+ * @access login required
+ */
+router.put(
+  "/changeDarkMode",
+  authentication.loginRequired,
+  validators.validate([
+    body("isDarkMode", "Invalid isDarkMode").exists().notEmpty(),
+  ]),
+  userController.updateDarkMode
+);
+
 module.exports = router;
