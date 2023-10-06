@@ -73,12 +73,6 @@ userController.sendInvitation = async (req, res, next) => {
     throw new AppError(400, "Email is already invited", "Registration Error");
 
   invitation = await Invitation.create({ email });
-  // sendMail({
-  //   to: "user email",
-  //   from: "manager email",
-  //   subject: "Invitation to create an account",
-  //   text: "Please follow this link to register new account `${link} ",
-  // });
 
   sendResponse(res, 200, true, { invitation }, null, "Invitation sent");
 };
